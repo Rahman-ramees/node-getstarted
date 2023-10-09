@@ -1,0 +1,103 @@
+const { MongoClient } = require("mongodb");
+ 
+// Replace the following with your Atlas connection string                                                                                                                                        
+const url = "mongodb+srv://rahmanramees:9207677362rmz@rahman.cbrumpj.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp"
+const client = new MongoClient(url);
+ 
+ // Reference the database to use
+ const dbName = "gettingStarted";
+                      
+ async function run() {
+    try {
+        // Connect to the Atlas cluster
+         await client.connect();
+         const db = client.db(dbName);
+
+         // Reference the "people" collection in the specified database
+         const col = db.collection("people");
+         
+
+         // Create a new document                                                                                                                                           
+         let personDocument = {
+             name: { "first": "Alan", "last": "Turing" },
+             birth: new Date(1912, 5, 23), // May 23, 1912                                                                                                                                 
+             death: new Date(1954, 5, 7),  // May 7, 1954                                                                                                                                  
+             contribs: [ "Turing machine", "Turing test", "Turingery" ],
+             views: 1250000
+         }
+
+         // Insert the document into the specified collection        
+        //  const p = await col.insertOne(personDocument);
+
+         let arrayofobj = [
+            {
+                name: { "first": "rahman", "last": "ramees" },
+                birth: new Date(1912, 5, 23), // May 23, 1912                                                                                                                                 
+                death: new Date(1954, 5, 7),  // May 7, 1954                                                                                                                                  
+                contribs: [ "Turing machine", "Turing test", "Turingery" ],
+                views: 1250000
+            },
+            {
+                name: { "first": "sayanth", "last": "kumar" },
+                birth: new Date(1912, 5, 23), // May 23, 1912                                                                                                                                 
+                death: new Date(1954, 5, 7),  // May 7, 1954                                                                                                                                  
+                contribs: [ "Turing machine", "Turing test", "Turingery" ],
+                views: 1250000
+            },
+            {
+                name: { "first": "favas", "last": "muhammed" },
+                birth: new Date(1912, 5, 23), // May 23, 1912                                                                                                                                 
+                death: new Date(1954, 5, 7),  // May 7, 1954                                                                                                                                  
+                contribs: [ "Turing machine", "Turing test", "Turingery" ],
+                views: 1250000
+            }
+         ]
+
+        //  const po = await col.insertMany(arrayofobj)
+          
+           // Define the update operation using the $push operator
+    const update = {
+    
+          contribs: {
+                name: { first: "newFirstName", last: "newLastName" },
+                birth: new Date(2000, 0, 1), // January 1, 2000
+                death: new Date(2023, 10, 7), // October 7, 2023
+                contribs: ["New Contribution"],
+                views: 1,
+          },
+        
+      };
+
+        const po = await col.updateOne(arrayofobj,update)
+
+         // Find and return the document
+        //  const filter = { "name.last": "ramees" };
+         const document = await col.find(po).toArray();
+         console.log("Document found:\n" + JSON.stringify(document));// Define the filter and update objects
+
+
+        
+
+        // const filter = { "name.last": "ramees" };
+        // const document = { $set: (arrayofobj,{ fieldToUpdate: 'this is rahman' }) };
+        // console.log("Document found:\n" + JSON.stringify(document));// Define the filter and update objects
+
+        // Update a single document
+        // col.updateOne(filter, update, function(err, result) {
+        //     if (err) throw err;
+
+        //     console.log("Document updated successfully");
+        //     client.close();
+        // });
+
+
+        } catch (err) {
+         console.log(err.stack);
+     }
+ 
+     finally {
+        await client.close();
+    }
+}
+
+run().catch(console.dir);
